@@ -1,7 +1,19 @@
 import React from 'react';
 import Milestone from '../components/Milestone';
+import { Plus } from 'lucide-react';
 
+/**
+ * Provides the TaskView component view, rendered under the `/task` route.
+ * 
+ * @returns TaskView component
+ */
 const TaskView: React.FC = () => {
+
+    handleAddTask = () => {
+        // Logic to add a task
+        console.log('Add Task button clicked');
+    }
+
     return (
         <div className='flex flex-col w-screen h-screen bg-black p-8 text-white'>
             <div className='flex flex-row justify-between mb-4'>
@@ -12,8 +24,10 @@ const TaskView: React.FC = () => {
                 <div className='min-w-[320px] bg-white-5 border border-white-10 rounded-lg'>
                     <header className='flex justify-between p-4 border-b border-white-10'>
                         <h2 className='text-base font-semibold'>Tasks</h2>
-                        <button className='flex justify-center border border-white-10 rounded-md p-2'>
-                            <p className='w-4 h-4'>+</p>
+                        <button className='flex justify-center border border-white-10 rounded-md p-2 text-white'
+                            onClick={handleAddTask}>
+                        >
+                            <Plus></Plus>
                         </button>
                     </header>
                     <main>
@@ -32,8 +46,13 @@ const TaskView: React.FC = () => {
                         </button>
                     </header>
                 </div>
-                <div className='min-w-[320px] bg-red-500'>
-                    test
+                <div className='min-w-[320px] bg-white-5 border border-white-10 rounded-lg'>
+                    <header className='flex justify-between p-4 border-b border-white-10'>
+                        <h2 className='text-base font-semibold'>Tasks</h2>
+                        <button className='flex justify-center border border-white-10 rounded-md p-2'>
+                            <p className='w-4 h-4'>+</p>
+                        </button>
+                    </header>
                 </div>
             </div>
             </div>
