@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Task } from '../types/Task';
 import Milestone from '../components/Milestone';
-import InProgress from '../components/Tasks/Containers/InProgress';
 import Backlog from '../components/Tasks/Containers/Backlog';
+import InProgress from '../components/Tasks/Containers/InProgress';
 import Committed from '../components/Tasks/Containers/Committed';
 
 
