@@ -8,11 +8,13 @@ import TaskView from './pages/TaskView.tsx';
 import DND from './DnDTest/DND.tsx';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import TaskDragPreview from './components/Tasks/TaskDragPreview.tsx';
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <BrowserRouter>
             <DndProvider backend={HTML5Backend}>
+                <TaskDragPreview />
                 <Routes>
                     <Route path="/" element={<App />} />
                     <Route path="/task" element={<TaskView />} />
