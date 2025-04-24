@@ -4,6 +4,7 @@ import Milestone from '../components/Milestone';
 import Backlog from '../components/Tasks/Containers/Backlog';
 import InProgress from '../components/Tasks/Containers/InProgress';
 import Committed from '../components/Tasks/Containers/Committed';
+import OnHold from '../components/Tasks/Containers/OnHold';
 
 
 /**
@@ -35,9 +36,15 @@ const TaskView: React.FC = () => {
 
     return (
         <div className='flex flex-col w-screen h-screen bg-black p-8 text-white'>
-            <div className='flex flex-row justify-between mb-4'>
-                <h1 className='text-lg font-semibold'>Task View</h1>
+            <div className='flex flex-row justify-between gap-8 mb-8'>
+                <div className='min-w-[320px]'>
+                    <h1 className='text-lg font-semibold'>Task View</h1>
+                </div>
                 <Milestone />
+                <OnHold
+                    tasks={getTasksByStatus("OnHold")}
+                    onDrop={(task: Task) => handleUpdateTaskStatus(task, "OnHold")}
+                />
             </div>
             <div className='flex flex-row h-full gap-8'>
                 <Backlog
