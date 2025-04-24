@@ -7,7 +7,7 @@ interface TaskItemProps {
     task: Task;
 }
 
-const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
+const TaskItem: React.FC<TaskItemProps> = ({ task }) => { 
     const ref = useRef<HTMLDivElement>(null);
     const [{ isDragging }, drag, preview] = useDrag(() => ({
         type: 'Task',
