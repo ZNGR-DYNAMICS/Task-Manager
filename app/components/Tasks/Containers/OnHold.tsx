@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useDrop } from "react-dnd";
 import { Pause } from "lucide-react";
 import { Task } from "../../../types/Task";
@@ -10,6 +10,7 @@ interface OnHoldProps {
 }
 
 const OnHold: React.FC<OnHoldProps> = ({ tasks, onDrop }) => {
+    const [showDropdown, setShowDropdown] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     const [, drop] = useDrop(() => ({
         accept: "Task",
@@ -20,22 +21,42 @@ const OnHold: React.FC<OnHoldProps> = ({ tasks, onDrop }) => {
 
     drop(ref);
 
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (ref.current && !ref.current.contains(event.target as Node)) {
+                setShowDropdown(false);
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside)
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+        };
+    }, []);
+
     return (
-        <div ref={ref} className='group min-w-[320px] bg-white-5 border border-amber-500 rounded-lg'>
-            <main className='flex justify-between gap-2 p-2'>
-                <div className='flex justify-center items-center gap-2'>
+        <div ref={ref} className='relative group w-fit min-w-[320px] bg-white-5 border border-amber-500 rounded-lg overflow-visible'>
+            <main className='peer flex justify-between gap-2 p-2 cursor-pointer' onClick={() => setShowDropdown((prev) => !prev)}>
+                <div className='peer flex justify-center items-center gap-2' tabIndex={0}>
                     <Pause size='16px' />
                     <h2 className="font-base font-medium">On Hold</h2>
                 </div>
                 <p>{tasks.length}</p>
             </main>
-            <div className="absolute hidden group-hover:flex min-w-[320px] bg-white-10">
-                <div className="flex p-2 select-none">
-                    {tasks.map((task) => (
-                        <TaskItem key={task.id} task={task} />
-                    ))}
+            {showDropdown && tasks.length > 0 && (
+                <div
+                    className="absolute top-full mt-1 left-0 -translate-x-[1px]
+                        bg-white-5-plain border border-amber-500 
+                        rounded-lg shadow-lg 
+                        transition-opacity duration-200
+                        min-w-[320px] z-10"
+                >
+                    <div className="p-2">
+                        {tasks.map((task) => (
+                            <TaskItem key={task.id} task={task} />
+                        ))}
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     )
 
