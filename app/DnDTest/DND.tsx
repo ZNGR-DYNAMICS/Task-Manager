@@ -146,7 +146,7 @@ const InProgressTaskContainer: React.FC<InProgressTaskContainerProps> = ({ task,
                         <div className="font-semibold">{task.title}</div>
                         {task.description && <div>{task.description}</div>}
                         {task.assignee && <div><strong>Assignee:</strong> {task.assignee}</div>}
-                        {task.dueDate && <div><strong>Due:</strong> {task.dueDate}</div>}
+                        {task.dateDue && <div><strong>Due:</strong> {task.dateDue}</div>}
                         {task.taskSize && <div><strong>Size:</strong> {task.taskSize}</div>}
                         {task.files && task.files.length > 0 && (
                             <div>
