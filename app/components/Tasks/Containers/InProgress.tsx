@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { useDrop, useDrag } from "react-dnd";
 import type { Task } from "../../../types/Task";
+import TaskItem from "../TaskItem";
 
 type InProgressProps = {
     task: Task | null;
@@ -47,12 +48,14 @@ const InProgress: React.FC<InProgressProps> = ({ task, onDrop }) => {
             ref={ref}
             className='w-full bg-white-5 border border-white-10 rounded-lg flex-grow overflow-y-auto'
         >
-            <header className='flex justify-between p-2 border-b border-white-10'>
+            <header className='flex gap-4 border-b border-white-10 text-nowrap'>
                 <h2 className='text-base font-medium'>In Progress</h2>
                 { task ? (
                     <>
-                        <InProgressDraggable task={task} />
-                        <h2 className='text-base font-medium'>{task.assignee}</h2>
+                        <div className="w-20">
+                            <TaskItem task={task} />
+                        </div>
+                        <h2 className='ml-auto text-base font-medium'>{task.assignee}</h2>
                     </>
                 ) : (
                     <h2 className='text-base font-medium'>Assigned User</h2>
