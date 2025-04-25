@@ -26,15 +26,15 @@ const Backlog: React.FC<BacklogProps> = ({ tasks, onDrop }) => {
 
     return (
         <div ref={ref} className='min-w-[320px] bg-white-5 border border-white-10 rounded-lg'>
-            <header className='flex justify-between p-2 border-b border-white-10'>
-                <div className='flex gap-2'>
+            <header className='flex h-12 justify-between items-center p-2 border-b border-white-10'>
+                <div className='pl-2 flex gap-2'>
                     <div className='flex justify-center items-center'>
-                        <Circle size='16px' />
+                        <Circle size='16px' strokeWidth={2} />
                     </div>
-                    <h2 className='font-base font-medium'>Backlog</h2>
+                    <h2 className='font'>Backlog</h2>
                 </div>
                 <button
-                    className=' border border-white-25 rounded-md p-1 text-white cursor-pointer'
+                    className='border border-white-25 rounded-md p-1 text-white cursor-pointer'
                     onClick={handleAddTask}
                 >
                     <Plus size='16px' />
