@@ -35,8 +35,8 @@ const OnHold: React.FC<OnHoldProps> = ({ tasks, onDrop }) => {
 
     return (
         <div ref={ref} className='relative group w-fit min-w-[320px] bg-white-5 border border-amber-500 rounded-lg overflow-visible'>
-            <main className='peer flex justify-between gap-2 p-2 cursor-pointer' onClick={() => setShowDropdown((prev) => !prev)}>
-                <div className='peer flex justify-center items-center gap-2' tabIndex={0}>
+            <main className='flex justify-between gap-2 p-2 cursor-pointer' onClick={() => setShowDropdown((prev) => !prev)}>
+                <div className='flex justify-center items-center gap-2' tabIndex={0}>
                     <Pause size='16px' />
                     <h2 className="font-base font-medium">On Hold</h2>
                 </div>
