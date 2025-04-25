@@ -38,7 +38,7 @@ const TaskView: React.FC = () => {
         <div className='flex flex-col w-screen h-screen bg-black p-8 text-white'>
             <div className='flex flex-row justify-between gap-8 mb-8'>
                 <div className='min-w-[320px]'>
-                    <h1 className='text-lg font-semibold'>Task View</h1>
+                    <h1 className='text-lg font-medium'>Task View</h1>
                 </div>
                 <Milestone />
                 <OnHold
