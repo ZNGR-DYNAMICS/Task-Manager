@@ -3,45 +3,51 @@ require_once 'db.php';
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *'); // For dev set to all
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
+header('Access-Control-Allow-Methods: GET, POST, PUT, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 $method = $_SERVER['REQUEST_METHOD'];
 $tasks = read_tasks();
 
-switch($method) {
+switch ($method) {
     case 'GET':
         echo json_encode($tasks);
         break;
 
-    case 'POST': 
+    case 'POST':
         $data = json_decode(file_get_contents('php://input'), true);
-        if(!isset($data['title']) || trim($data['title']) === '') {
-            echo json_encode(['error' => 'Title is required']);
-            exit;
-        }
 
-        $task = [
+        $newTask = [
             'id' => uniqid(),
-            'title' => htmlspecialchars($data['title']),
-            'status' => 'backlog'
+            'title' => htmlspecialchars($data['title'] ?? ''),
+            'status' => $data['status'] ?? 'Backlog',
+            'dateCreated' => date('Y-m-d'),
+            'description' => $data['description'] ?? '',
+            'assignee' => $data['assignee'] ?? '',
+            'dateDue' => $data['dateDue'] ?? '',
+            'taskSize' => $data['taskSize'] ?? 'Medium',
+            'files' => $data['files'] ?? [],
+            'type' => 'Task',
         ];
 
-        $tasks[] = $task;
+        $tasks[] = $newTask;
         write_tasks($tasks);
 
-        echo json_encode($task);
+        echo json_encode($newTask);
         break;
 
-    case 'PUT': 
-        $data = json_decode(file_get_contents("php://input"), true);
-        $id = $data['id'] ?? null;
+    case 'PUT':
+        $data = json_decode(file_get_contents('php://input'), true);
         $updated = false;
 
-        foreach ($tasks as $task) {
-            if ($task[$id] === $id) {
-                $task['title'] = htmlspecialchars($data['title'] ?? $task['title']);
-                $task['status'] = $data['status'] ?? $task['status'];
+        foreach ($tasks as &$task) {
+            if ($task['id'] === ($data['id'] ?? '')) {
+                $task = array_merge($task, $data);
                 $updated = true;
                 break;
             }
@@ -54,7 +60,9 @@ switch($method) {
             http_response_code(404);
             echo json_encode(['error' => 'Task not found']);
         }
-    default: 
+        break;
+
+    default:
         http_response_code(405);
         echo json_encode(['error' => 'Method not allowed']);
         break;
