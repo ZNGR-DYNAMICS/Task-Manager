@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Task } from '../types/Task';
 import Milestone from '../components/Milestone';
 import Backlog from '../components/Tasks/Containers/Backlog';
@@ -13,25 +13,99 @@ import OnHold from '../components/Tasks/Containers/OnHold';
  * @returns TaskView component
  */
 const TaskView: React.FC = () => {
-    const [tasks, setTasks] = useState<Task[]>([
-        { id: "1", title: "Task 1", status: "Backlog", type: "Task", dateCreated: "2023-08-01", assignee: "User 1" },
-        { id: "2", title: "Task 2", status: "Backlog", type: "Task", dateCreated: "2023-08-15", assignee: "User 2" },
-        { id: "3", title: "Task 3", status: "Backlog", type: "Task", dateCreated: "2023-08-20", assignee: "User 3" },
-        { id: "4", title: "Task 4", status: "Backlog", type: "Task", dateCreated: "2023-09-01", assignee: "User 4" },
-        { id: "5", title: "Task 5", status: "Backlog", type: "Task", dateCreated: "2023-10-01", assignee: "User 5" },
-    ]);
+    const [tasks, setTasks] = useState<Task[]>([]);
+
+    useEffect(() => {
+        fetchTasks();
+    }, []);
+
+    const fetchTasks = async () => {
+        const response = await fetch('http://localhost:8000/tasks.php');
+        const data = await response.json();
+        setTasks(data);
+    };
+
+    const addTask = async (newTask: Partial<Task>) => {
+        const createdTask = {
+            ...newTask,
+            id: crypto.randomUUID(),  // Generate temporary id if needed
+            dateCreated: new Date().toISOString().split('T')[0],
+        } as Task;
+
+        setTasks(prev => [...prev, createdTask]);
+    
+        fetch('http://localhost:8000/tasks.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(createdTask),
+        }).catch(error => {
+            console.error("Failed to save task to server", error);
+        });
+    };
+    
+    const updateTask = async (updatedTask: Task) => {
+        setTasks(prev => {
+            let updatedTasks = [...prev];
+
+            const currentInProgressTask = updatedTasks.find(task => task.status === 'InProgress');
+
+            if (updatedTask.status === 'InProgress') {
+                if (currentInProgressTask) {
+                    if (currentInProgressTask.id === updatedTask.id) {
+                        // Same task is already InProgress -> move it back to Backlog
+                        updatedTask = { ...updatedTask, status: 'Backlog' };
+                    } else {
+                        // Another task is in progress -> move it back to Backlog
+                        updatedTasks = updatedTasks.map(task => 
+                            task.id === currentInProgressTask.id 
+                                ? { ...task, status: 'Backlog' } 
+                                : task
+                        );
+
+                        fetch('http://localhost:8000/tasks.php', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ ...currentInProgressTask, status: 'Backlog' }),
+                        }).catch(error => {
+                            console.error('Failed to update previous InProgress task on server', error);
+                        });
+                    }
+                }
+            }
+
+            updatedTasks = updatedTasks.map(task =>
+                task.id === updatedTask.id ? updatedTask : task
+            );
+
+            return updatedTasks;
+        })
+
+        fetch('http://localhost:8000/tasks.php', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedTask),
+        }).catch(err => {
+            console.error("Failed to update task on server", err);
+        });
+    };
+    
 
     const getTasksByStatus = (status: Task["status"]) =>
         tasks.filter((task) => task.status === status);
 
-    const handleUpdateTaskStatus = (task: Task, newStatus: Task["status"]) => {
-        setTasks((prev) =>
-            prev.map((t) =>
-                t.id === task.id ? { ...t, status: newStatus } :
-                t.status === newStatus && newStatus === "InProgress" ? { ...t, status: "Backlog" } :
-                t
-            )
-        );
+    const handleUpdateTaskStatus = (task: Task, newStatus: Task['status']) => {
+        const updatedTask = { ...task, status: newStatus };
+        updateTask(updatedTask);
+    };
+
+    const handleAddTask = () => {
+        const newTask: Partial<Task> = {
+            title: 'New Task',
+            status: 'Backlog',
+            type: 'Task',
+            dateCreated: new Date().toISOString().split('T')[0],
+        };
+        addTask(newTask);
     };
 
     return (
@@ -50,6 +124,7 @@ const TaskView: React.FC = () => {
                 <Backlog
                     tasks={getTasksByStatus("Backlog")} 
                     onDrop={(task: Task) => handleUpdateTaskStatus(task, "Backlog")}
+                    onAddTask={handleAddTask}
                 />
                 <InProgress 
                     task={getTasksByStatus("InProgress")[0] || null} 

@@ -9,30 +9,6 @@ type InProgressProps = {
     onDrop: (task: Task) => void;
 };
 
-/*const InProgressDraggable: React.FC<{ task: Task }> = ({ task }) => {
-    const moveRef = useRef<HTMLDivElement>(null);
-    const [{ isDragging }, drag] = useDrag(() => ({
-        type: task.type,
-        item: { ...task },
-        collect: (monitor) => ({
-            isDragging: !!monitor.isDragging(),
-        }),
-    }), [task]);
-
-    drag(moveRef);
-
-    return (
-        <div
-            ref={moveRef}
-            className={`inline-block p-2 mt-4 bg-blue-100 text-blue-800 border border-blue-400 rounded cursor-move text-sm ${
-                isDragging ? "opacity-60" : "opacity-100"
-            }`}
-        >
-            Move Task
-        </div>
-    );
-};*/
-
 const InProgress: React.FC<InProgressProps> = ({ task, onDrop }) => {
     const ref = useRef<HTMLDivElement>(null);
     const [, drop] = useDrop(() => ({
