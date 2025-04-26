@@ -5,6 +5,7 @@ import Backlog from '../components/Tasks/Containers/Backlog';
 import InProgress from '../components/Tasks/Containers/InProgress';
 import Committed from '../components/Tasks/Containers/Committed';
 import OnHold from '../components/Tasks/Containers/OnHold';
+import AddTask from '../components/Tasks/Containers/AddTask';
 
 
 /**
@@ -14,6 +15,7 @@ import OnHold from '../components/Tasks/Containers/OnHold';
  */
 const TaskView: React.FC = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
+    const [showAddTaskView, setShowAddTaskView] = useState(false);
 
     useEffect(() => {
         fetchTasks();
@@ -98,18 +100,22 @@ const TaskView: React.FC = () => {
         updateTask(updatedTask);
     };
 
-    const handleAddTask = () => {
-        const newTask: Partial<Task> = {
-            title: 'New Task',
-            status: 'Backlog',
-            type: 'Task',
-            dateCreated: new Date().toISOString().split('T')[0],
-        };
+    const handleAddTask = (newTask?: Partial<Task>) => {
+        if (!newTask) {
+            setShowAddTaskView(true);
+            return;
+        }
         addTask(newTask);
     };
 
     return (
         <div className='flex flex-col w-screen h-screen bg-black p-8 text-white'>
+            {showAddTaskView && (
+                <AddTask
+                    onClose={() => setShowAddTaskView(false)}
+                    onAdd={(task) => handleAddTask(task)}
+                />
+            )}
             <div className='flex flex-row justify-between gap-8 mb-8'>
                 <div className='min-w-[320px]'>
                     <h1 className='text-lg font-medium'>Task View</h1>
@@ -124,7 +130,7 @@ const TaskView: React.FC = () => {
                 <Backlog
                     tasks={getTasksByStatus("Backlog")} 
                     onDrop={(task: Task) => handleUpdateTaskStatus(task, "Backlog")}
-                    onAddTask={handleAddTask}
+                    onAddTask={() => handleAddTask()}
                 />
                 <InProgress 
                     task={getTasksByStatus("InProgress")[0] || null} 
