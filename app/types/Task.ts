@@ -2,6 +2,7 @@ export interface Task {
     id: string;
     title: string;
     status: 'Backlog' | 'InProgress' | 'OnHold' | 'Committed' | 'Cancelled' | 'Released';
+    milestone: string;
     dateCreated: string;
     description?: string;
     assignee?: string;
