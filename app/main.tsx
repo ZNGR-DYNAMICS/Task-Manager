@@ -9,6 +9,12 @@ import DND from './DnDTest/DND.tsx';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
+if (import.meta.hot) { // Avoids full page reload on PHP-API calls
+    import.meta.hot.on('vite:beforeFullReload', () => {
+        throw '(skipping full reload)';
+    });
+}
+
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <BrowserRouter>
