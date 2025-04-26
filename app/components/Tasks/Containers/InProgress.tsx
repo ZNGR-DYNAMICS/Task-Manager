@@ -32,7 +32,7 @@ const InProgress: React.FC<InProgressProps> = ({ task, onDrop }) => {
                 </div>
                 { task ? (
                     <>
-                        <div className="w-20">
+                        <div className="w-80">
                             <TaskItem task={task} />
                         </div>
                         <h2 className='ml-auto text-base font-medium'>{task.assignee}</h2>
