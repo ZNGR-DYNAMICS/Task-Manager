@@ -6,6 +6,7 @@ import InProgress from '../components/Tasks/Containers/InProgress';
 import Committed from '../components/Tasks/Containers/Committed';
 import OnHold from '../components/Tasks/Containers/OnHold';
 import AddTask from '../components/Tasks/Containers/AddTask';
+import { AnimatePresence } from 'framer-motion';
 
 
 /**
@@ -110,12 +111,14 @@ const TaskView: React.FC = () => {
 
     return (
         <div className='flex flex-col w-screen h-screen bg-black p-8 text-white'>
-            {showAddTaskView && (
-                <AddTask
-                    onClose={() => setShowAddTaskView(false)}
-                    onAdd={(task) => handleAddTask(task)}
-                />
-            )}
+            <AnimatePresence>
+                {showAddTaskView && (
+                    <AddTask
+                        onClose={() => setShowAddTaskView(false)}
+                        onAdd={(task) => handleAddTask(task)}
+                    />
+                )}
+            </AnimatePresence>
             <div className='flex flex-row justify-between gap-8 mb-8'>
                 <div className='min-w-[320px]'>
                     <h1 className='text-lg font-medium'>Task View</h1>

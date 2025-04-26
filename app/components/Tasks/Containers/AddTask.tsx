@@ -1,13 +1,26 @@
 import { useState } from "react";
 import { Task } from "../../../types/Task";
 import { X } from "lucide-react";
+import { motion } from "framer-motion";
 
+/**
+ * Props for the AddTask component.
+ * @property onClose - Callback to close the add task modal.
+ * @property onAdd - Callback to add a new task. Receives a partial Task object.
+ */
 interface AddTaskProps {
     onClose: () => void;
-    onAdd: (task: Partial<Task>) => void; 
+    onAdd: (task: Partial<Task>) => void;
 }
 
+/**
+ * AddTask component allows users to create a new task.
+ * 
+ * @param AddTaskProps - Component props.
+ * @returns  The rendered AddTask modal.
+ */
 const AddTask: React.FC<AddTaskProps> = ({ onClose, onAdd }) => {
+    const [isClosing, setIsClosing] = useState(false); // Handles closing animation, before triggering onClose()
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [assignee, setAssignee] = useState('');
@@ -22,11 +35,24 @@ const AddTask: React.FC<AddTaskProps> = ({ onClose, onAdd }) => {
             type: 'Task',
             dateCreated: new Date().toISOString().split('T')[0],
         });
-        onClose();
+        handleClose();
     };
 
+    const handleClose = () => {
+        setIsClosing(true);
+        setTimeout(() => {
+            onClose();
+        }, 200);
+    };
+ 
     return (
-        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 mt-20 bg-white text-black rounded-lg shadow-lg p-6 w-[300px] z-50">
+        <motion.div
+            initial={{ opacity: 0, x: -8 }}
+            exit={{ opacity: 0, x: -8 }}
+            transition={{ duration: 0.2 }}
+            className="absolute top-0 left-[360px] mt-20 bg-white text-black rounded-lg shadow-lg p-6 w-[300px] z-50"
+            animate={isClosing ? { opacity: 0, x: -8 } : { opacity: 1, x: 0 }} // 👈 important for smooth closing
+        >
             {/* Small triangle */}
             <div className="absolute -left-3 top-8 w-0 h-0 border-t-8 border-t-transparent border-b-8 border-b-transparent border-r-8 border-r-white" />
             
@@ -63,7 +89,7 @@ const AddTask: React.FC<AddTaskProps> = ({ onClose, onAdd }) => {
                     Create Task
                 </button>
             </div>
-        </div>
+        </motion.div>
     )
 }
 
