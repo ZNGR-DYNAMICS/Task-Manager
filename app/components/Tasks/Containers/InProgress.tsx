@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { useDrop } from "react-dnd";
 import type { Task } from "../../../types/Task";
 import TaskItem from "../TaskItem";
+import { CirclePlay } from "lucide-react";
 
 type InProgressProps = {
     task: Task | null;
@@ -24,8 +25,11 @@ const InProgress: React.FC<InProgressProps> = ({ task, onDrop }) => {
             ref={ref}
             className='w-full bg-white-5 border border-white-10 rounded-lg flex-grow overflow-y-auto'
         >
-            <header className='flex gap-4 border-b border-white-10 text-nowrap'>
-                <h2 className='text-base font-medium'>In Progress</h2>
+            <header className='h-12 flex justify-between items-center px-4 gap-4 border-b border-white-10 text-nowrap'>
+                <div className="flex justify-center items-center gap-2">
+                    <CirclePlay size='16px' />
+                    <h2 className='text-base font-medium'>In Progress</h2>
+                </div>
                 { task ? (
                     <>
                         <div className="w-20">

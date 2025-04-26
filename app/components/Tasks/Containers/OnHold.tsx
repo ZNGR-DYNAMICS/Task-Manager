@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useDrop } from "react-dnd";
-import { Pause } from "lucide-react";
+import { CirclePause } from "lucide-react";
 import { Task } from "../../../types/Task";
 import TaskItem from "../TaskItem";
 
@@ -35,9 +35,9 @@ const OnHold: React.FC<OnHoldProps> = ({ tasks, onDrop }) => {
 
     return (
         <div ref={ref} className='relative group w-fit min-w-[320px] bg-white-5 border border-amber-500 rounded-lg overflow-visible'>
-            <main className='flex justify-between gap-2 p-2 cursor-pointer' onClick={() => setShowDropdown((prev) => !prev)}>
+            <main className='h-12 flex justify-between items-center gap-2 px-4 py-2 cursor-pointer' onClick={() => setShowDropdown((prev) => !prev)}>
                 <div className='flex justify-center items-center gap-2' tabIndex={0}>
-                    <Pause size='16px' />
+                    <CirclePause size='16px' />
                     <h2 className="font-base font-medium">On Hold</h2>
                 </div>
                 <p>{tasks.length}</p>

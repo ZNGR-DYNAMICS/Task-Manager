@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { useDrop } from "react-dnd";
-import { Check } from "lucide-react";
+import { CircleCheck } from "lucide-react";
 import TaskItem from "../TaskItem";
 import { Task } from "../../../types/Task";
 
@@ -22,11 +22,9 @@ const Committed: React.FC<CommittedProps> = ({ tasks, onDrop }) => {
 
     return (
         <div ref={ref} className='min-w-[320px] bg-white-5 border border-white-10 rounded-lg'>
-            <header className='flex p-2 border-b border-white-10 select-none'>
-                <div className='flex gap-2'>
-                    <div className='flex justify-center items-center'>
-                        <Check size='16px' />
-                    </div>
+            <header className='h-12 flex px-4 py-2 border-b border-white-10 select-none'>
+                <div className='flex justify-center items-center gap-2'>
+                    <CircleCheck size='16px' />
                     <h2 className='font-base font-medium'>Committed</h2>
                 </div>
             </header>
