@@ -3,13 +3,15 @@ import { useDrop } from "react-dnd";
 import { Plus, Circle } from "lucide-react";
 import TaskItem from "../TaskItem";
 import { Task } from "../../../types/Task";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface BacklogProps {
     tasks: Task[];
     onDrop: (task: Task) => void;
+    onAddTask: () => void;
 }
 
-const Backlog: React.FC<BacklogProps> = ({ tasks, onDrop }) => {
+const Backlog: React.FC<BacklogProps> = ({ tasks, onDrop, onAddTask }) => {
     const ref = useRef<HTMLDivElement>(null);
     const [, drop] = useDrop(() => ({
         accept: "Task",
@@ -19,7 +21,7 @@ const Backlog: React.FC<BacklogProps> = ({ tasks, onDrop }) => {
     }), [onDrop]);
 
     function handleAddTask() {
-        console.log('Add Task button clicked');
+        onAddTask();
     }
 
     drop(ref);
@@ -40,10 +42,21 @@ const Backlog: React.FC<BacklogProps> = ({ tasks, onDrop }) => {
                     <Plus size='16px' />
                 </button>
             </header>
-            <main className='p-2'>
-                {tasks.map((task) => (
-                    <TaskItem key={task.id} task={task} />
-                ))}
+            <main className="p-2">
+                <AnimatePresence>
+                    {tasks.map(task => (
+                        <motion.div
+                            key={task.id}
+                            layout
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10, height: 0 }}
+                            transition={{ duration: 0.2 }}
+                        >
+                            <TaskItem key={task.id} task={task} />
+                        </motion.div>
+                    ))}
+                </AnimatePresence>
             </main>
         </div>
     )
