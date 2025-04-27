@@ -36,7 +36,7 @@ const Backlog: React.FC<BacklogProps> = ({ tasks, onDrop, onAddTask }) => {
                     <h2 className='font'>Backlog</h2>
                 </div>
                 <button
-                    className='border border-white-25 rounded-md p-1 text-white cursor-pointer'
+                    className='hover:bg-white-5 border border-white-10 rounded-md p-1 text-white cursor-pointer transition-colors duration-200 hover:shadow-sm shadow-neutral-950'
                     onClick={handleAddTask}
                 >
                     <Plus size='16px' />
