@@ -51,9 +51,8 @@ const AddTask: React.FC<AddTaskProps> = ({ onClose, onAdd }) => {
             exit={{ opacity: 0, x: -8 }}
             transition={{ duration: 0.2 }}
             className="absolute top-0 left-[360px] mt-20 bg-white text-black rounded-lg shadow-lg p-6 w-[300px] z-50"
-            animate={isClosing ? { opacity: 0, x: -8 } : { opacity: 1, x: 0 }} // 👈 important for smooth closing
+            animate={isClosing ? { opacity: 0, x: -8 } : { opacity: 1, x: 0 }}
         >
-            {/* Small triangle */}
             <div className="absolute -left-3 top-8 w-0 h-0 border-t-8 border-t-transparent border-b-8 border-b-transparent border-r-8 border-r-white" />
             
             <div className="flex justify-between items-center mb-4">
