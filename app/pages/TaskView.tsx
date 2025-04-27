@@ -8,7 +8,6 @@ import OnHold from '../components/Tasks/Containers/OnHold';
 import AddTask from '../components/Tasks/Containers/AddTask';
 import { AnimatePresence } from 'framer-motion';
 
-
 /**
  * Provides the TaskView component view, rendered under the `/task` route.
  * 
@@ -92,7 +91,6 @@ const TaskView: React.FC = () => {
         });
     };
     
-
     const getTasksByStatus = (status: Task["status"]) =>
         tasks.filter((task) => task.status === status);
 
