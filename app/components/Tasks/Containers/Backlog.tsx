@@ -23,7 +23,11 @@ const Backlog: React.FC<BacklogProps> = ({ tasks, onDrop, onAddTask }) => {
     }), [onDrop]);
 
     function toggleAddTask() {
-        setIsAddingTask(prev => !prev);
+        if (isAddingTask) {
+            handleCloseAddTask();
+            return;
+        }
+        setIsAddingTask(true);
     }
 
     function handleConfirmAddTask(taskData: Partial<Task>) {
@@ -43,13 +47,15 @@ const Backlog: React.FC<BacklogProps> = ({ tasks, onDrop, onAddTask }) => {
         exit: { opacity: 0, y: 8 },
     }
 
+    const layoutTransition = { duration: 0.2, ease: "easeInOut" };
+
     return (
         <div ref={ref} className='min-w-[320px] bg-white-5 border border-white-10 rounded-lg'>
-            <motion.header className={`flex flex-col gap-2 p-2 border-b border-white-10 ${isAddingTask ? 'justify-center' : ''}`}
-                animate={{ height: isAddingTask ? 'auto' : '48px' }}
-                transition={{ duration: 1, ease: 'easeInOut' }}
+            <motion.header className={`min-h-12 flex flex-col gap-2 p-2 border-b border-white-10 ${isAddingTask ? 'justify-center' : ''}`}
+                transition={{layoutTransition}}
+                layout
             >
-                <div className='flex justify-between items-center'>
+                <div className='flex w-full justify-between items-center'>
                     <div className='pl-2 flex gap-2 items-center overflow-hidden'>
                         <div className='flex justify-center items-center'>
                             <div>
@@ -57,7 +63,7 @@ const Backlog: React.FC<BacklogProps> = ({ tasks, onDrop, onAddTask }) => {
                             </div>
                         </div>
                         <div className="relative h-6 w-24">
-                            <AnimatePresence initial={false} mode="wait"> {/* Use mode="wait" or "popLayout" */}
+                            <AnimatePresence initial={false} mode="wait">
                                 <motion.h2
                                     key={isAddingTask ? 'add' : 'backlog'}
                                     variants={textVariants}

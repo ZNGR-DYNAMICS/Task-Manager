@@ -37,11 +37,11 @@ const AddTask: React.FC<AddTaskProps> = ({ onAdd }) => {
  
     return (
         <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-            className="pt-4 border-t border-white-10 overflow-hidden"
+            initial={{ opacity: 0 }} // Start invisible and slightly above
+            animate={{ opacity: 1 }}   // Fade in and slide down to position
+            exit={{ opacity: 0, height: 0 }}    // Fade out and slide up slightly
+            transition={{ duration: 0.2 }} // Can be quicker than parent layout animation
+            className="p-4 pt-2 overflow-hidden"
         >            
             <div className="flex flex-col gap-2">
                 <input
