@@ -108,7 +108,7 @@ const TaskView: React.FC = () => {
     };
 
     return (
-        <div className='flex flex-col w-screen h-screen bg-black p-8 text-white'>
+        <div className='flex flex-col w-screen h-screen bg-black p-8 text-white overflow-hidden'>
             <AnimatePresence>
                 {showAddTaskView && (
                     <AddTask
