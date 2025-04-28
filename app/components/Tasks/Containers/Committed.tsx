@@ -3,6 +3,7 @@ import { useDrop } from "react-dnd";
 import { CircleCheck } from "lucide-react";
 import TaskItem from "../TaskItem";
 import { Task } from "../../../types/Task";
+import { motion } from "framer-motion";
 
 interface CommittedProps {
     tasks: Task[];
@@ -30,7 +31,16 @@ const Committed: React.FC<CommittedProps> = ({ tasks, onDrop }) => {
             </header>
             <main className="p-2">
                 {tasks.map((task) => (
-                    <TaskItem key={task.id} task={task} />
+                    <motion.div
+                        key={task.id}
+                        layout
+                        initial={{ opacity: 0, y: -8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8, height: 0 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        <TaskItem key={task.id} task={task} />
+                    </motion.div>
                 ))}
             </main>
         </div>
