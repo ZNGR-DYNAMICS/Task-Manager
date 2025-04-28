@@ -1,18 +1,20 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useDrop } from "react-dnd";
-import { Plus, Circle } from "lucide-react";
+import { Plus, Circle, X } from "lucide-react";
 import TaskItem from "../TaskItem";
+import AddTask from "./AddTask";
 import { Task } from "../../../types/Task";
 import { AnimatePresence, motion } from "framer-motion";
 
 interface BacklogProps {
     tasks: Task[];
     onDrop: (task: Task) => void;
-    onAddTask: () => void;
+    onAddTask: (task: Partial<Task>) => void;
 }
 
 const Backlog: React.FC<BacklogProps> = ({ tasks, onDrop, onAddTask }) => {
     const ref = useRef<HTMLDivElement>(null);
+    const [isAddingTask, setIsAddingTask] = useState(false);
     const [, drop] = useDrop(() => ({
         accept: "Task",
         drop: (item: Task) => {
@@ -20,37 +22,92 @@ const Backlog: React.FC<BacklogProps> = ({ tasks, onDrop, onAddTask }) => {
         },
     }), [onDrop]);
 
-    function handleAddTask() {
-        onAddTask();
+    function toggleAddTask() {
+        setIsAddingTask(prev => !prev);
+    }
+
+    function handleConfirmAddTask(taskData: Partial<Task>) {
+        onAddTask(taskData);
+        setIsAddingTask(false);
+    }
+
+    function handleCloseAddTask() {
+        setIsAddingTask(false);
     }
 
     drop(ref);
 
+    const textVariants = {
+        hidden: { opacity: 0, y: -8 },
+        visible: { opacity: 1, y: 0 },
+        exit: { opacity: 0, y: 8 },
+    }
+
     return (
         <div ref={ref} className='min-w-[320px] bg-white-5 border border-white-10 rounded-lg'>
-            <header className='flex h-12 justify-between items-center p-2 border-b border-white-10'>
-                <div className='pl-2 flex gap-2'>
-                    <div className='flex justify-center items-center'>
-                        <Circle size='16px' strokeWidth={2} />
+            <motion.header className={`flex flex-col gap-2 p-2 border-b border-white-10 ${isAddingTask ? 'justify-center' : ''}`}
+                animate={{ height: isAddingTask ? 'auto' : '48px' }}
+                transition={{ duration: 1, ease: 'easeInOut' }}
+            >
+                <div className='flex justify-between items-center'>
+                    <div className='pl-2 flex gap-2 items-center overflow-hidden'>
+                        <div className='flex justify-center items-center'>
+                            <div>
+                                <Circle size='16px' strokeWidth={2} />
+                            </div>
+                        </div>
+                        <div className="relative h-6 w-24">
+                            <AnimatePresence initial={false} mode="wait"> {/* Use mode="wait" or "popLayout" */}
+                                <motion.h2
+                                    key={isAddingTask ? 'add' : 'backlog'}
+                                    variants={textVariants}
+                                    initial="hidden"
+                                    animate="visible"
+                                    exit="exit"
+                                    transition={{ duration: 0.2 }}
+                                    className='absolute font-semibold whitespace-nowrap'
+                                >
+                                    {isAddingTask ? "Add Task" : "Backlog"}
+                                </motion.h2>
+                            </AnimatePresence>
+                        </div>
                     </div>
-                    <h2 className='font'>Backlog</h2>
+                    <button
+                        className='hover:bg-white-5 border border-white-10 rounded-md p-1 text-white cursor-pointer transition-colors duration-200 hover:shadow-sm shadow-neutral-950'
+                        onClick={toggleAddTask}
+                        aria-label={isAddingTask ? "Cancel adding task" : "Add new task"}
+                    >
+                         <AnimatePresence initial={false} mode="wait">
+                            <motion.div
+                                key={isAddingTask ? 'close' : 'add'}
+                                initial={{ opacity: 0, scale: 0.5, rotate: -90 }}
+                                animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                                exit={{ opacity: 0, scale: 0.5, rotate: 90 }}
+                                transition={{ duration: 0.2 }}
+                            >
+                                {isAddingTask ? <X size='16px' /> : <Plus size='16px' />}
+                            </motion.div>
+                        </AnimatePresence>
+                    </button>
                 </div>
-                <button
-                    className='hover:bg-white-5 border border-white-10 rounded-md p-1 text-white cursor-pointer transition-colors duration-200 hover:shadow-sm shadow-neutral-950'
-                    onClick={handleAddTask}
-                >
-                    <Plus size='16px' />
-                </button>
-            </header>
+                <AnimatePresence>
+                    {isAddingTask && (
+                        <AddTask
+                            onClose={handleCloseAddTask}
+                            onAdd={handleConfirmAddTask}
+                        />
+                    )}
+                </AnimatePresence>
+            </motion.header>
             <main className="p-2">
                 <AnimatePresence>
                     {tasks.map(task => (
                         <motion.div
                             key={task.id}
                             layout
-                            initial={{ opacity: 0, y: -10 }}
+                            initial={{ opacity: 0, y: -8 }}
                             animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10, height: 0 }}
+                            exit={{ opacity: 0, y: -8, height: 0 }}
                             transition={{ duration: 0.2 }}
                         >
                             <TaskItem key={task.id} task={task} />

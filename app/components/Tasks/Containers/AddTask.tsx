@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Task } from "../../../types/Task";
-import { X } from "lucide-react";
 import { motion } from "framer-motion";
 
 /**
@@ -19,8 +18,7 @@ interface AddTaskProps {
  * @param AddTaskProps - Component props.
  * @returns  The rendered AddTask modal.
  */
-const AddTask: React.FC<AddTaskProps> = ({ onClose, onAdd }) => {
-    const [isClosing, setIsClosing] = useState(false); // Handles closing animation, before triggering onClose()
+const AddTask: React.FC<AddTaskProps> = ({ onAdd }) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [assignee, setAssignee] = useState('');
@@ -35,55 +33,42 @@ const AddTask: React.FC<AddTaskProps> = ({ onClose, onAdd }) => {
             type: 'Task',
             dateCreated: new Date().toISOString().split('T')[0],
         });
-        handleClose();
-    };
-
-    const handleClose = () => {
-        setIsClosing(true);
-        setTimeout(() => {
-            onClose();
-        }, 200);
     };
  
     return (
         <motion.div
-            initial={{ opacity: 0, x: -8 }}
-            exit={{ opacity: 0, x: -8 }}
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2 }}
-            className="absolute top-0 left-[360px] mt-20 bg-white text-black rounded-lg shadow-lg p-6 w-[300px] z-50"
-            animate={isClosing ? { opacity: 0, x: -8 } : { opacity: 1, x: 0 }}
-        >
-            <div className="absolute -left-3 top-8 w-0 h-0 border-t-8 border-t-transparent border-b-8 border-b-transparent border-r-8 border-r-white" />
-            
-            <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold">Add New Task</h2>
-                <button onClick={onClose}>
-                    <X size={20} />
-                </button>
-            </div>
-            
-            <div className="flex flex-col gap-3">
+            className="pt-4 border-t border-white-10 overflow-hidden"
+        >            
+            <div className="flex flex-col gap-2">
                 <input
-                    className="border p-2 rounded-md"
-                    placeholder="Title"
+                    className="hover:bg-white-5 border border-white-5 p-2 rounded-md text-white focus:outline-none transition-colors duration-200"
+                    placeholder="Title (required)"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
+                    aria-label="Task Title"
                 />
                 <textarea
-                    className="border p-2 rounded-md"
+                    className="hover:bg-white-5 border border-white-5 p-2 rounded-md text-white focus:outline-none min-h-fit max-h-96 transition-colors duration-200"
                     placeholder="Description"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
+                    aria-label="Task Description"
                 />
                 <input
-                    className="border p-2 rounded-md"
+                    className="hover:bg-white-5 border border-white-5 p-2 rounded-md text-white focus:outline-none transition-colors duration-200"
                     placeholder="Assignee"
                     value={assignee}
                     onChange={(e) => setAssignee(e.target.value)}
+                    aria-label="Task Assignee"
                 />
                 <button
                     onClick={handleSubmit}
-                    className="bg-black text-white py-2 rounded-md hover:bg-gray-800 mt-2"
+                    className="hover:bg-white-5 border border-white-5 p-2 rounded-md text-white focus:outline-none disabled:opacity-50 transition-colors duration-200"
+                    disabled={!title.trim()}
                 >
                     Create Task
                 </button>
