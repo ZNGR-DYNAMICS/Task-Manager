@@ -5,8 +5,6 @@ import Backlog from '../components/Tasks/Containers/Backlog';
 import InProgress from '../components/Tasks/Containers/InProgress';
 import Committed from '../components/Tasks/Containers/Committed';
 import OnHold from '../components/Tasks/Containers/OnHold';
-import AddTask from '../components/Tasks/Containers/AddTask';
-import { AnimatePresence } from 'framer-motion';
 
 /**
  * Provides the TaskView component view, rendered under the `/task` route.
@@ -15,7 +13,6 @@ import { AnimatePresence } from 'framer-motion';
  */
 const TaskView: React.FC = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
-    const [showAddTaskView, setShowAddTaskView] = useState(false);
 
     useEffect(() => {
         fetchTasks();
@@ -30,7 +27,7 @@ const TaskView: React.FC = () => {
     const addTask = async (newTask: Partial<Task>) => {
         const createdTask = {
             ...newTask,
-            id: crypto.randomUUID(),  // Generate temporary id if needed
+            id: crypto.randomUUID(),
             dateCreated: new Date().toISOString().split('T')[0],
         } as Task;
 
@@ -99,24 +96,12 @@ const TaskView: React.FC = () => {
         updateTask(updatedTask);
     };
 
-    const handleAddTask = (newTask?: Partial<Task>) => {
-        if (!newTask) {
-            setShowAddTaskView(true);
-            return;
-        }
+    const handleAddTask = (newTask: Partial<Task>) => {
         addTask(newTask);
     };
 
     return (
         <div className='flex flex-col w-screen h-screen bg-black p-8 text-white overflow-hidden'>
-            <AnimatePresence>
-                {showAddTaskView && (
-                    <AddTask
-                        onClose={() => setShowAddTaskView(false)}
-                        onAdd={(task) => handleAddTask(task)}
-                    />
-                )}
-            </AnimatePresence>
             <div className='flex flex-row justify-between gap-8 mb-8'>
                 <div className='min-w-[320px]'>
                     <h1 className='text-lg font-medium'>Task View</h1>
@@ -128,10 +113,10 @@ const TaskView: React.FC = () => {
                 />
             </div>
             <div className='flex flex-row h-full gap-8'>
-                <Backlog
-                    tasks={getTasksByStatus("Backlog")} 
+            <Backlog
+                    tasks={getTasksByStatus("Backlog")}
                     onDrop={(task: Task) => handleUpdateTaskStatus(task, "Backlog")}
-                    onAddTask={() => handleAddTask()}
+                    onAddTask={handleAddTask}
                 />
                 <InProgress 
                     task={getTasksByStatus("InProgress")[0] || null} 
